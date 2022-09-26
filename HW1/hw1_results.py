@@ -17,34 +17,32 @@ label_yes = ["acc", "good", "vgood"]
 label_no = ["unacc"]
 
 
-def car_train():
+def car_train(method, depth=6):
     #changing the label to be binary 
     car_data = pd.read_csv("data/train.csv", header=None)
-    root = id3.ID3(car_data, features, label_yes, label_no, 6)
+    root = id3.ID3_Method(method,car_data, features, label_yes, label_no, 6,6)
     return root
 
-def car_test():
+def car_test(method, depth=6):
     test_data = pd.read_csv("data/test.csv", header=None)
-    test_root = id3.ID3(test_data, features, label_yes, label_no, 6)
+    test_root = id3.ID3_Method(method,test_data, features, label_yes, label_no, 6,6)
     return test_root
 
-def test_Tennis(method):
+def test_Tennis(method,depth=6):
     tennis_data = pd.read_csv("data/PlayTennis.csv", header=None)
     
     feat={"Outlook":0, "Temperature":1, "Humidity":2, "Wind":3}
    
     l_y = ["yes"]
     l_n = ["no"]
-    tennis_root = id3.ID3_Method(method,tennis_data, feat, l_y, l_n, 4)
+    tennis_root = id3.ID3_Method(method,tennis_data, feat, l_y, l_n, 4,6)
     return tennis_root
 
-ly = ["yes"]
-label = "answer"
-feat={"Outlook":0, "Temperature":1, "Humidity":2, "Wind":3, "answer":4}
-play_tennis = test_Tennis("IG")
-id3.printTree(play_tennis)
-test_data_Tennis = pd.read_csv("data/test_Tennis.csv", header=None)
-result = id3.prediction_result(play_tennis, test_data_Tennis,feat, ly, label)
-
-print(result)
-
+root_train_IG = car_train("IG")
+root_train_ME = car_train("ME")
+root_train_GI = car_train("GI")
+root_tennis = test_Tennis("IG")
+id3.printTree(root_train_IG)
+id3.printTree(root_train_ME)
+id3.printTree(root_train_GI)
+id3.printTree(root_tennis)

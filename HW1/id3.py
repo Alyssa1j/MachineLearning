@@ -5,7 +5,7 @@ import tree_node as tree
 import id3_math as m
 
 
-def ID3(data, attrs, label_yes, label_no, answer, depth=0):
+def ID3(data, attrs, label_yes, label_no, answer, depth=6):
     root = tree.Node()
 
     max_gain = 0
@@ -30,7 +30,7 @@ def ID3(data, attrs, label_yes, label_no, answer, depth=0):
             dummyNode = tree.Node()
             dummyNode.value = u
             new_attrs = attrs.copy()
-            new_attrs.pop(max_feat)
+            new_attrs.pop(max_feat)      
             child = ID3(subdata, new_attrs, label_yes, label_no, answer)
             dummyNode.children.append(child)
             root.children.append(dummyNode)
@@ -44,8 +44,8 @@ def ID3_ME(data, attrs, label_yes, label_no, answer, depth=0):
     max_feat = ""
     for feature in attrs:
         gain = m.gain_ME(data, attrs[feature], label_yes, label_no, answer)
-        print(feature+":")
-        print(gain)
+        #print(feature+":")
+       # print(gain)
         if gain > max_gain:
             max_gain = gain
             max_feat = feature
@@ -101,7 +101,7 @@ def ID3_GI(data,attrs, label_yes, label_no, answer, depth=0):
             root.children.append(dummyNode)
     return root
 
-def ID3_Method(method, data,attrs, label_yes, label_no, answer, depth=0):
+def ID3_Method(method,data,attrs, label_yes, label_no, answer, depth=6):
     if method == "ME":
         return ID3_ME(data,attrs, label_yes, label_no, answer, depth)
     if method == "GI":
