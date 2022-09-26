@@ -1,2 +1,2 @@
 #!/bin/sh
-python hw1_results.py
+python3 hw1_results.py
