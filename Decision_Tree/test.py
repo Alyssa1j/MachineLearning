@@ -29,7 +29,7 @@ def car_test():
     return test_root
 
 def test_Tennis(method):
-    tennis_data = pd.read_csv("data/PlayTennis.csv", header=None)
+    tennis_data = pd.read_csv("data/playtennis.csv", header=None)
     
     feat={"Outlook":0, "Temperature":1, "Humidity":2, "Wind":3}
    
