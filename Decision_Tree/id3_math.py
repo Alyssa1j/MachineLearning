@@ -26,6 +26,32 @@ def entropy(examples, label_yes, col):
         n = neg / (pos + neg)
         return -(p * math.log(p, 2) + n * math.log(n, 2))
 
+def info_gain_w(examples, attr, label_yes, col,w):
+    uniq = np.unique(examples[attr])
+    gain = entropy_w(examples, label_yes, col,w)
+    for u in uniq:
+        subdata = examples[examples[attr] == u]
+        sub_e = entropy_w(subdata, label_yes, col,w)
+        
+        gain -= (float(len(subdata)) / float(len(examples))) * sub_e
+        #print(u,sub_e)
+    return gain
+    
+def entropy_w(examples, label_yes, col,w):
+    pos = 0.0
+    neg = 0.0
+    for i, row in examples.iterrows():
+        if row[col] in label_yes:
+            pos += w[i]
+        else:
+            neg += w[i]
+    if pos == 0.0 or neg == 0.0:
+        return 0.0
+    else:
+        p = pos / (pos + neg)
+        n = neg / (pos + neg)
+        return -(p * math.log(p, 2) + n * math.log(n, 2))
+
 
 def gain_ME(examples, attr, label_yes, col):
     uniq = np.unique(examples[attr])

@@ -19,23 +19,38 @@ class Adaboost:
         self.clfs = []
 
         #print(len(data),x,y)
-        for i in range(1,3):
+        for i in range(1,t):
             clf = DecisionStump.DecisionStump()
             min_error = float("inf")  
-            clf.tree = id3.ID3(data,features,pos_label,neg_label,ly-1,2)
+            clf.tree = id3.ID3_weighted(data,features,pos_label,neg_label,ly-1,w,2)
             clf.feature_idx = clf.tree.value
-            #calculate error rate for stump:
+            #find Et from stump
             for i,data_row in data.iterrows():
                 b = id3.prediction(clf.tree, data_row, features, pos_label,ly-1)
                 if not b:
                     error = w[i]
                     if(error < min_error):
                         min_error = error
-           
             
+            clf.alpha = 0.5 * np.log10((1.0 - min_error) / (min_error))
+            #print(clf.feature_idx,clf.alpha)
 
-            clf.alpha = 0.5 * np.log((1.0 - min_error) / (min_error))
-
+            #increase weight on incorrect predictions
+            #decrease weight on correct predictions
+            #   print("Before: ",np.unique(w))
             # calculate predictions and update weights
-
-
+            predictions = clf.predict(data,features, pos_label,ly-1)
+            w *= np.exp(clf.alpha * predictions)
+            # print("After: ",np.unique(w))
+            # Normalize to one
+            w /= np.sum(w)
+                 # print("Normalized:",np.unique(w))
+            # Save classifier
+            self.clfs.append(clf)
+            
+    def predict(self, data,feat,ly):
+        _,y=data.shape
+        clf_preds = [-clf.alpha * clf.predict(data,feat,ly,y-1) for clf in self.clfs]
+        y_pred = np.sum(clf_preds, axis=0)
+        y_pred = np.sign(y_pred)
+        return y_pred

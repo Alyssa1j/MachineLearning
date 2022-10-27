@@ -46,6 +46,89 @@ def ID3(data, attrs, label_yes, label_no,answer, depth=6):
             root.children.append(dummyNode)
     return root
 
+#id3 with weighted samples:
+def ID3_weighted(data, attrs, label_yes, label_no,answer, weights, depth=6):
+    root = tree.Node()
+
+    max_gain = 0
+    max_feat = ""
+    for feature in attrs:
+        gain = m.info_gain_w(data, attrs[feature], label_yes, answer, weights)
+        if gain > max_gain:
+            max_gain = gain
+            max_feat = feature
+    root.value = (max_feat, attrs[max_feat])
+    root.level=depth
+    root.infogain = gain
+    uniq = np.unique(data[attrs[max_feat]])
+    for u in uniq:
+        subdata = data[data[attrs[max_feat]] == u]
+        result = m.entropy_w(subdata, label_yes, answer, weights)
+        if  result == 0.0 or (depth-1)==1:
+            newNode = tree.Node()
+            newNode.isLeaf = True
+            newNode.value = (u,answer)   
+            newNode.pred = np.unique(subdata[answer])
+            if(any(p in newNode.pred for p in label_no) and any(p in newNode.pred for p in label_yes)):
+                newNode.pred = subdata[answer].value_counts().idxmax()
+
+           # print(newNode.value, newNode.pred)
+            newNode.entropy = result
+            newNode.level = depth-1  
+            root.children.append(newNode)
+        else:
+            dummyNode = tree.Node()
+            dummyNode.value = (u, attrs[max_feat])
+            #print(dummyNode.value)
+            dummyNode.level=depth-1
+            new_attrs = attrs.copy()
+            new_attrs.pop(max_feat)      
+            child = ID3_weighted(subdata, new_attrs, label_yes, answer,weights,depth-2)
+            dummyNode.children.append(child)
+            root.children.append(dummyNode)
+    return root
+
+#id3 with weighted samples and binary threshold
+def ID3_W_BT(data, attrs, label_yes, label_no,answer, weights, depth=6):
+    root = tree.Node()
+
+    max_gain = 0
+    max_feat = ""
+    for feature in attrs:
+        gain = m.info_gain_w(data, attrs[feature], label_yes, answer, weights)
+        if gain > max_gain:
+            max_gain = gain
+            max_feat = feature
+    root.value = (max_feat, attrs[max_feat])
+    root.level=depth
+    root.infogain = gain
+    uniq = np.unique(data[attrs[max_feat]])
+    for u in uniq:
+        subdata = data[data[attrs[max_feat]] == u]
+        result = m.entropy_w(subdata, label_yes, answer, weights)
+        if  result == 0.0 or (depth-1)==1:
+            newNode = tree.Node()
+            newNode.isLeaf = True
+            newNode.value = (u,answer)   
+            newNode.pred = np.unique(subdata[answer])
+            if(any(p in newNode.pred for p in label_no) and any(p in newNode.pred for p in label_yes)):
+                newNode.pred = subdata[answer].value_counts().idxmax()
+
+           # print(newNode.value, newNode.pred)
+            newNode.entropy = result
+            newNode.level = depth-1  
+            root.children.append(newNode)
+        else:
+            dummyNode = tree.Node()
+            dummyNode.value = (u, attrs[max_feat])
+            #print(dummyNode.value)
+            dummyNode.level=depth-1
+            new_attrs = attrs.copy()
+            new_attrs.pop(max_feat)      
+            child = ID3_weighted(subdata, new_attrs, label_yes, answer,weights,depth-2)
+            dummyNode.children.append(child)
+            root.children.append(dummyNode)
+    return root
 
 def ID3_ME(data, attrs, label_yes, label_no, answer, depth=0):
     root = tree.Node()
