@@ -101,7 +101,7 @@ def ID3_W_BT(data, attrs, label_yes, label_no,answer, weights, depth=6):
             max_feat = feature
     root.value = (max_feat, attrs[max_feat])
     root.level=depth
-    root.infogain = gain
+    root.infogain = max_gain
     uniq = np.unique(data[attrs[max_feat]])
     for u in uniq:
         subdata = data[data[attrs[max_feat]] == u]

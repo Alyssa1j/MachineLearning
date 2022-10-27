@@ -6,8 +6,7 @@ import id3
 import tree_node
 # Define AdaBoost class
 class Adaboost:
-    def __init__(self, n_clf=5): 
-        self.n_clf = n_clf
+    def __init__(self): 
         self.clfs = []
 
     def fit(self, data, features, pos_label,neg_label, t=100):
@@ -21,33 +20,29 @@ class Adaboost:
         #print(len(data),x,y)
         for i in range(1,t):
             clf = DecisionStump.DecisionStump()
-            min_error = float("inf")  
-            clf.tree = id3.ID3_weighted(data,features,pos_label,neg_label,ly-1,w,2)
+            t_error = 0
+            clf.tree = id3.ID3_W_BT(data,features,pos_label,neg_label,ly-1,w,2)
             clf.feature_idx = clf.tree.value
             #find Et from stump
             for i,data_row in data.iterrows():
                 b = id3.prediction(clf.tree, data_row, features, pos_label,ly-1)
                 if not b:
-                    error = w[i]
-                    if(error < min_error):
-                        min_error = error
+                    t_error += w[i]
+                    
+           # print(t_error)
             
-            clf.alpha = 0.5 * np.log10((1.0 - min_error) / (min_error))
-            #print(clf.feature_idx,clf.alpha)
-
+            clf.alpha = 0.5 * np.log10((1.0 - t_error) / (t_error))
+          #  print(clf.alpha)
             #increase weight on incorrect predictions
             #decrease weight on correct predictions
-            #   print("Before: ",np.unique(w))
-            # calculate predictions and update weights
             predictions = clf.predict(data,features, pos_label,ly-1)
             w *= np.exp(clf.alpha * predictions)
-            # print("After: ",np.unique(w))
             # Normalize to one
             w /= np.sum(w)
                  # print("Normalized:",np.unique(w))
             # Save classifier
             self.clfs.append(clf)
-            
+           # print(clf.feature_idx,clf.alpha)
     def predict(self, data,feat,ly):
         _,y=data.shape
         clf_preds = [-clf.alpha * clf.predict(data,feat,ly,y-1) for clf in self.clfs]

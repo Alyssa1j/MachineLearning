@@ -27,15 +27,31 @@ def entropy(examples, label_yes, col):
         return -(p * math.log(p, 2) + n * math.log(n, 2))
 
 def info_gain_w(examples, attr, label_yes, col,w):
-    uniq = np.unique(examples[attr])
-    gain = entropy_w(examples, label_yes, col,w)
-    for u in uniq:
-        subdata = examples[examples[attr] == u]
+    #find meadian if its a numberic value
+    #print("examples[attr]: ",examples[attr][0])
+    if(type(examples[attr][0]) == int):
+        threshold = np.median(examples[attr])
+        uniq = examples[attr]
+        gain = entropy_w(examples, label_yes, col,w)
+        subdata = examples[examples[attr] < threshold]
+        subdata2 = examples[examples[attr] > threshold]
+
         sub_e = entropy_w(subdata, label_yes, col,w)
-        
-        gain -= (float(len(subdata)) / float(len(examples))) * sub_e
-        #print(u,sub_e)
-    return gain
+        sub_e2 = entropy_w(subdata2, label_yes, col,w) 
+        gain -= (float(len(subdata2)) / float(len(examples))) * sub_e
+        gain -= (float(len(subdata)) / float(len(examples))) * sub_e2
+            #print(u,sub_e)
+        return gain
+    else:
+        uniq = np.unique(examples[attr])
+        gain = entropy_w(examples, label_yes, col,w)
+        for u in uniq:
+            subdata = examples[examples[attr] == u]
+            sub_e = entropy_w(subdata, label_yes, col,w)
+            
+            gain -= (float(len(subdata)) / float(len(examples))) * sub_e
+            #print(u,sub_e)
+        return gain
     
 def entropy_w(examples, label_yes, col,w):
     pos = 0.0

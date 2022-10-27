@@ -8,32 +8,32 @@ def accuracy(y_true, y_pred):
         return accuracy
 #train on tennis
 
-def test_Tennis():
-    tennis_data = pd.read_csv("Decision_Tree/data/playtennis.csv", header=None)
-    test_tennis = pd.read_csv("Decision_Tree/data/test_Tennis.csv", header=None)
-    feat={"Outlook":0, "Temperature":1, "Humidity":2, "Wind":3}
+def test_bank(t):
+    train_data = pd.read_csv("HW2/Data/bank-2/train.csv", header=None)
+    test_data = pd.read_csv("HW2/Data/bank-2/test.csv", header=None)
+    feat={"age":0, "job":1, "marital":2, "education":3,"default":4, "balance":5, 
+          "housing":6,"loan":7,"contact":8,"day":9,"month":10,"duration":11,
+          "campaign":12,"pdays":13,"previous":14,"poutcome":15 }
    
     l_y = ["yes"]
     l_n = ["no"]
    
-    clf = ad.Adaboost(n_clf=4)
-    clf.fit(tennis_data, feat, l_y, l_n,t=50)
-    y_pred = clf.predict(test_tennis,feat, l_y)
-    #print(y_pred)
-    n_samples = len(test_tennis)
+    clf = ad.Adaboost()
+    clf.fit(train_data, feat, l_y, l_n,t)
+    y_pred = clf.predict(test_data,feat,l_y)
+    n_samples = len(test_data)
     y_test = np.ones(n_samples)
+ 
     acc = accuracy(y_test, y_pred)
     return acc
+acc = np.zeros(500)
+for t in range(1,100):
+  acc[t] = test_bank(t)
 
-def test_bank():
-    tennis_data = pd.read_csv("/data/playtennis.csv", header=None)
-    
-    feat={"Outlook":0, "Temperature":1, "Humidity":2, "Wind":3}
-   
-    l_y = ["yes"]
-    l_n = ["no"]
-   
-    clf = ad.Adaboost(n_clf=4)
-    clf.fit(tennis_data, feat, l_y, l_n,t=10)
-acc = test_Tennis()
+xpoints = np.array([1,100])
+plt.plot(xpoints,acc)
+plt.xlabel('iterations') 
+plt.ylabel('accuracy') 
+plt.title("accuracy improvment")
+plt.show()
 print("Accuracy:", acc)

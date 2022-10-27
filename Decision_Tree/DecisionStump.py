@@ -6,7 +6,6 @@ class DecisionStump:
     def __init__(self):
         self.tree = None
         self.feature_idx = None
-        self.threshold = None
         self.alpha = None
 
     def predict(self, data,features, pos_label,ly):
