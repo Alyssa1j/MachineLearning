@@ -26,11 +26,11 @@ def test_bank(t):
  
     acc = accuracy(y_test, y_pred)
     return acc
-acc = np.zeros(500)
-for t in range(1,100):
+acc = np.zeros(10)
+for t in range(1,10):
   acc[t] = test_bank(t)
 
-xpoints = np.array([1,100])
+xpoints = np.array([1,10])
 plt.plot(xpoints,acc)
 plt.xlabel('iterations') 
 plt.ylabel('accuracy') 
