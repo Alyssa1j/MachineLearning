@@ -1,13 +1,14 @@
 import numpy as np
 import math
 
-def info_gain(examples, attr, label_yes, label_no, col):
+def info_gain(examples, attr, label_yes, col):
     uniq = np.unique(examples[attr])
     gain = entropy(examples, label_yes, col)
     for u in uniq:
         subdata = examples[examples[attr] == u]
         sub_e = entropy(subdata, label_yes, col)
         gain -= (float(len(subdata)) / float(len(examples))) * sub_e
+       # print(u,sub_e)
     return gain
     
 def entropy(examples, label_yes, col):
@@ -26,7 +27,7 @@ def entropy(examples, label_yes, col):
         return -(p * math.log(p, 2) + n * math.log(n, 2))
 
 
-def gain_ME(examples, attr, label_yes, label_no, col):
+def gain_ME(examples, attr, label_yes, col):
     uniq = np.unique(examples[attr])
     set_length = examples.shape[0]
     gain = ME(examples, label_yes, col)
@@ -53,7 +54,7 @@ def ME(examples, label_yes, col):
         return neg
 
 
-def gain_GI(examples, attr, label_yes, label_no, col):
+def gain_GI(examples, attr, label_yes, col):
     uniq = np.unique(examples[attr])
     gain = GI(examples, label_yes, col)
     for u in uniq:
