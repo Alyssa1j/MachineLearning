@@ -1,8 +1,8 @@
 import Perceptron
 import pandas as pd
 import numpy as np
-bank_train_data = pd.read_csv("Perceptron/data/bank-note/train.csv", header=None)
-bank_test_data = pd.read_csv("Perceptron/data/bank-note/test.csv", header=None)
+bank_train_data = pd.read_csv("data/bank-note/train.csv", header=None)
+bank_test_data = pd.read_csv("data/bank-note/test.csv", header=None)
 
 x = bank_train_data.iloc[:,0:5].to_numpy()
 y = bank_train_data.iloc[:,4].to_numpy()
@@ -14,7 +14,7 @@ print("2A results.............")
 w = Perceptron.perceptron_std_plot(xtest,ytest,t=10, r=0.01)
 print("Learned Weight vector: ",w)
 p,c = Perceptron.std_pred(xtest,ytest,w)
-print("correctly predicted: ", c)
+print("correctly predicted test: ", c)
 print("2B results.............")
 print("trained data: ")
 p,w = Perceptron.perceptron_vtd(x,y,t=10, r=0.01)
