@@ -1,0 +1,1 @@
+run.sh will run the file h4.py which includes all the results utilizing function from SVM.py
