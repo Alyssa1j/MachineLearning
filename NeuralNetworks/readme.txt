@@ -1,0 +1,1 @@
+run.sh will run hw5 but does not include the 50 and 100 iterations, those are very slow, if you wish to calculate that number of iterations, uncomment the lines in hw5 that stop it. 
